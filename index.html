@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Word-by-word</title>
+    <link rel="shortcut icon" href="lay/favicon.ico">
+
+    <script src="js/stim.js"></script>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugins/jspsych-call-function.js"></script>
+    <script src="jspsych/plugins/jspsych-check.js"></script>
+    <script src="jspsych/plugins/jspsych-form.js" ></script>
+    <script src="jspsych/plugins/jspsych-fullscreen.js"></script>
+    <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-instructions.js"></script>
+    <script src="jspsych/plugins/jspsych-self-paced-reading.js"></script>
+    <script src="jspsych/plugins/jspsych-survey-multi-select.js" ></script>
+    <link rel="stylesheet" href="jspsych/css/jspsych.css">
+
+    <script>
+        // reload page every 1 hour to prevent locked token
+         function reload() {
+            setTimeout("location.reload(true);", 3600000);
+         }
+   </script>
+
+  </head>
+  <body onload = "reload();">
+   
+  </body>
+  <script>
+    /**______ VERY IMPORTANT PARAMATERS **/
+    var is_demo = true;
+
+    /**-- Minimum blank duration before showing the next word during self paced reading task in ms*/
+    var inter_word_interval = 200;
+    
+    /**-- Minimum expected RT during self paced reading task to prevent key press error in ms */
+    var min_allowed_rt = -100;
+    
+    // GLOBAL var----
+    // browser info
+    var info = "";
+
+    // stimuli list
+    var list = "";
+    /**______ GET PROLIFIC INFO **/ 
+    var subject_id = "onex-demo"; //jsPsych.data.getURLVariable('PROLIFIC_PID');
+    var study_id = "demo"; //jsPsych.data.getURLVariable('STUDY_ID');
+    var session_id = "demo"; //jsPsych.data.getURLVariable('SESSION_ID');
+    
+    /*-- message when the required number of participants is reached */
+    function msg_number_reached(){
+      document.body.innerHTML = "<div class='forbidden'>Sorry, the maximum number of participants has been reached, "+" but tokens may be released tomorrow if the current "+
+        " experiences are not finalized...</div>";
+    }
+    /*-- message if it is not Chrome */
+    function msg_not_chrome(){
+      document.body.innerHTML = "<div class='forbidden'><p>Sorry, this experience requires "+
+        "the use of the <a href='https://www.google.com/chrome/'><img id='chrome' src='lay/chrome_logo.png' />Chrome browser.</a></p></div>";      
+    }
+    /*-- message if the participant isn't using a desktop device */
+    function msg_not_desktop(){
+      document.body.innerHTML = "<div class='forbidden'>Sorry, this experience requires "+
+        "the use of a keyboard (not compatible with a smartphone)</div>";
+    }
+
+    var define_experiment = function(){
+      /*-- stimulus object (SET IN stim.js)*/
+      // NOTE: the stimulus sentence is splitted by word according to the SPACE characters locations
+      var stim_block = define_self_block();
+
+
+      /**--- form blocks --- defined in stim.js **/
+      var form = define_form_blocks();
+    
+      /**______  BLOCK DEFINITIONS **/
+      
+      /* Fullscreen + Welcome*/
+      var fullscreen = {
+        type: 'fullscreen',
+        fullscreen_mode: true,
+        message: "<p id='title'>Dear participant,</p>"+
+            "<p id='title'>Welcome to this experiment!</p>"+
+            "<p>The experiment will switch to full screen mode when you press the button below.</p>"
+      };
+
+      /* CONSENT form */
+      var consent = {
+        type: 'survey-multi-select',
+        questions: [
+          {
+            prompt: "To start this study, you must <i>check this box</i> to indicate your consent to participate :",
+            options: ["Yes, I consent to the use of my answers for scientific research"], 
+            horizontal: true,
+            required: true,
+            name: 'consent'
+          }
+        ], 
+        randomize_question_order: false,
+        preamble: "<p id='title'>Consent for participation</p>"+
+        "<p>Data are anonymous and you can leave the experiment at any time.</p>"+
+        "<p><span class='important'>Warning</b>: This experiment lasts about 20 minutes: please allow enough time not to be disturbed during this test!</p>",
+        button_label: "Start the experiment"
+      };
+      
+       /* instructions */
+       var instruct_1 = {
+        type: "html-keyboard-response",
+        stimulus: "<div class='hlogo'><img id='logo' src='lay/spr_logo.png'/></div>"+
+          "<div id='instruction'><p id='title'>Instructions (1/2)</p>"+
+          "<p>In this experiment, you will read a small text formed by two sentences.</p>"+
+          "<p>The two sentences will be displayed separately.</p>"+
+          "<p>The first sentence will be presented to you in one shot, "+
+          "while the second sentence will be presented word-by-word.</p>"+
+          "<p>You will advance through sentences and words by pressing the SPACE bar.</p><br/>" +
+          "<p><i>Press the space bar</i> to continue.</p></div>",
+        post_trial_gap: 0,
+        choices: ['space']
+      };     
+      var instruct_2 = {
+        type: "html-keyboard-response",
+        stimulus: "<div class='hlogo'><img id='logo' src='lay/spr_logo.png'/></div>"+
+          "<div id='instruction'><p id='title'>Instructions (2/2)</p>"+
+          "<p>Your task is to <span class='important'>read</span> and <span class='important'>understand</span> the text.</p>"+
+          "<p>Some texts will be followed by one question, to check whether you understood their content.</p>"+
+          "<p>Read the text naturally.</p>"+
+          "<p>At the beginning of each pair, a cross will be displayed for a fixed period of time"+
+            " (it is not necessary to press any key while the cross is displayed).</p>" +
+          "<br/>" +
+          "<p><i>Press the space bar</i> to continue.</p></div>",
+        post_trial_gap: 0,
+        choices: ['space']
+      };
+
+      var train_instr = {
+        type: "html-keyboard-response",
+        stimulus: "<div class='hlogo'><img id='logo' src='lay/spr_logo.png'/></div>"+
+            "<div id='instruction'><p id='title'>Training</p>"+
+            "<p>Let's start with some practice trials so you can get used to this task.</p>"+
+            "<p>Remember: Press SPACE bar to advance through sentences and words</p><br />" +
+            "<p><i>Press the space bar</i> when ready to start.</p></div>",
+        post_trial_gap: 800,
+        choices: ['space']       
+      }
+
+      var hide_cursor = {
+        type: "call-function",
+        func: function(){
+          	// hide cursor
+	          document.body.className += " hidecursor";
+            return true;
+        },
+        async: false
+      }
+
+      var show_cursor = {
+        type: "call-function",
+        func: function(){
+          	// hide cursor
+	          document.body.className = document.body.className.replace(" hidecursor", "");
+            return true;
+        },
+        async: false
+      }
+      /* fixation cross to delimite sentences */
+      var fixation = {
+        type: 'html-keyboard-response',
+        stimulus: '<div id="fix_cross">+</div>',
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 800,
+        post_trial_gap: 600
+      };
+
+      /* check trials */
+      var check_form = {
+        submit: "OK",
+        feedback: function(istrue){
+          return (istrue)? "Result : Correct !" : "Result : Your answer is not correct. Please read the sentences carefully.";
+        }
+      };
+
+      var if_check = {
+        timeline: [
+          {
+            type: "check",
+			      quest: jsPsych.timelineVariable('quest'),
+            opt_str: jsPsych.timelineVariable('opt_str'),
+            opt_val: jsPsych.timelineVariable('opt_val'),
+            id: jsPsych.timelineVariable('id'),
+            check_form: check_form,
+            post_trial_gap: 800
+          }
+        ],
+        conditional_function: function(){
+          return jsPsych.timelineVariable('check', true)==1;
+        }
+      };
+      
+      /* training trial */
+      var training = {
+        type: "self-paced-reading",
+        stimulus: jsPsych.timelineVariable('stim'),
+        context: jsPsych.timelineVariable('contx'),
+        data:{
+          id: jsPsych.timelineVariable('id'), 
+          cond: jsPsych.timelineVariable('cond'),
+          check: jsPsych.timelineVariable('check')
+        },
+        choices: ['space'],
+        min_allowed_rt: min_allowed_rt,
+        inter_word_interval: inter_word_interval 
+      };
+	  
+	    var train_block = {
+		    timeline: [fixation, training, if_check],
+		    timeline_variables: stim_block.example,
+        randomize_order: false
+      };
+      
+      /* start test blocks */
+      var start_test = {
+        type: "html-keyboard-response",
+        stimulus: "<h2 class='green'>Good job!</h2><p>The training step is finished.</p><br/>"+
+          "<p><i>Press the spacebar</i> to start the real experiment.</p>",
+        post_trial_gap: 800,
+        choices: ['space']	 
+      };
+      
+      /* test blocks */
+      var test_task = {
+        type: "self-paced-reading",
+        stimulus: jsPsych.timelineVariable('stim'),
+        context: jsPsych.timelineVariable('contx'),
+        choices: ['space'],
+        data: {
+          id: jsPsych.timelineVariable('id'), 
+          cond: jsPsych.timelineVariable('cond'),
+          pos_dt: jsPsych.timelineVariable('pos_dt'),
+          check: jsPsych.timelineVariable('check'),
+          link: jsPsych.timelineVariable('link')
+        },
+        min_allowed_rt: min_allowed_rt,
+        inter_word_interval: inter_word_interval
+      };
+      
+      
+      /* All test blocks */
+      var test_procedure = (function(){
+        var test_block = [];
+        var n_block = stim_block.full.length; // n_block
+        for (var i=0; i<n_block; i++){
+          //!!!! test
+          test_block.push({
+            timeline: [fixation, test_task, if_check],
+            timeline_variables: stim_block.full[i], //.slice(0, 2),
+            randomize_order: false
+          });
+          if (i<n_block-1){
+            test_block.push({
+              type: "html-keyboard-response",
+              stimulus: "<p>End of part #"+(i+1)+ "</p><br/>" +
+              "<p>When you are ready, <i>press the spacebar</i> to read a new set of sentences...</p>",
+              post_trial_gap: 800,
+              choices: ['space']	 });
+          }
+        }
+        return [].concat.apply([], test_block);
+      })();
+
+      /* end of the SPR task */ 
+      var end_spr = {
+        type: "html-keyboard-response",
+        stimulus: "<h2 class='green'>The reading task is finished!</h2><br/>"+
+            "<p><i>Press the space bar</i> to continue.</p>",
+        post_trial_gap: 800,
+        choices: ['space']       
+      }
+
+      /* Exit Fullscreen */
+      var fullscreen_exit = {
+        type: 'fullscreen',
+        fullscreen_mode: false
+      };
+
+      /*-- function to save data before the end of the experiment */
+      function save_data(done){
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'db/db_save.php');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200){
+          // var response = JSON.parse(xhr.responseText);
+            done(xhr.responseText);
+          }
+        };
+        xhr.send(jsPsych.data.get().json());  
+      };
+
+      var data_save = {
+        type: "call-function",
+        func: save_data,
+        async: true  
+      };
+      /*-- function to update list statut */
+      function update_list(done){
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'db/db_update_list.php');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200){
+          // var response = JSON.parse(xhr.responseText);
+            console.log(xhr.responseText);
+            done(xhr.responseText);
+          }
+        };
+        xhr.send(subject_id);  
+      };
+
+      var list_update = {
+        type: "call-function",
+        func: update_list,
+        async: true
+      };
+
+      var merci = {
+        type: 'html-keyboard-response',
+        stimulus: "<p>You've finished the last task. Thanks for participating!</p><br />"+
+          "<p>You will be redirected to Prolific in a few seconds...</p>",
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 5000,
+        response_ends_trial: false
+      };
+
+
+      /* final experiment timeline */
+      if (!is_demo){
+        var exp = [fullscreen, consent, hide_cursor, instruct_1, instruct_2, train_instr, train_block, start_test, test_procedure, end_spr, show_cursor, form, data_save, list_update, merci, fullscreen_exit];
+      } else {
+        var exp = [fullscreen, consent, hide_cursor, instruct_1, instruct_2, train_instr, train_block, start_test, test_procedure, end_spr, show_cursor, form, merci, fullscreen_exit];
+      }
+    return exp;
+    };
+
+    // function to return prolific link ONLY  if experiment is complete
+    function get_prolific(){
+      // get last data
+      var last_data = jsPsych.data.getLastTrialData().last(1).values();
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'db/db_prolific.php', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200){
+          var response = xhr.responseText;
+          if (response.length>0){
+            redirect_prolific(response);
+          }else{
+            console.log("no you can't");
+          }
+        }
+      };
+      xhr.send(JSON.stringify(last_data[0]));  
+    }
+    function redirect_prolific(link){
+      // in case the redirection fails 
+      var jscont = document.getElementById("jspsych-content");
+      var the_link = "<div id='prolific_link'>Prolific link: <a href='" + link + "'>"+link+"</a></div>"; //</br><p>JSON data:</p>";
+      jscont.innerHTML = [the_link, jscont.innerHTML].join(" ");
+      window.location = link;
+    }
+
+    /* start the experiment */
+
+    // function to return prolific link ONLY  if experiment is complete
+    function get_info(){
+      // test if Chrome
+      // Chrome 1 - 79
+      var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+      if (!isChrome){
+        msg_not_chrome();
+      }else{
+        // test if desktop
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'db/whichbrowser.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200){
+            console.log(xhr.responseText);
+            var response = JSON.parse(xhr.responseText);
+            if (response.is_desk){
+              info = response;
+              get_list();
+            }else{
+              msg_not_desktop();
+            }
+          }
+        };
+        xhr.send();  
+      }
+    }
+
+    function get_list(){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'db/db_get_list.php', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200){
+          list = xhr.responseText;
+          console.log(list);
+          if (list.length > 0){
+            var exp = define_experiment(list);
+            init_experiment(exp);
+          }else{
+            msg_number_reached();
+          }
+        }
+      };
+      xhr.send(subject_id);       
+    }
+
+    var init_experiment = function(exp){
+      // keep user info
+      jsPsych.data.write_init({
+        type: 'info',
+        subject_id: subject_id,
+        study_id: study_id,
+        session_id: session_id,
+        list: list,
+        config: info.info
+      });
+
+      // start the experiment
+      jsPsych.init({
+        timeline: [].concat.apply([], exp),
+        show_progress_bar: true,
+        on_finish: function() {
+          // show data to figure out what it looks like for this demo
+          // jsPsych.data.displayData();
+          get_prolific();       
+        }
+      });      
+    };
+    if (!is_demo){
+      get_info();
+    } else {
+      var exp = define_experiment();
+      init_experiment(exp);
+    }
+
+  </script>
+</html>

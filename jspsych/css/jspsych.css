@@ -1,0 +1,441 @@
+/*
+ * CSS for jsPsych experiments.
+ *
+ * This stylesheet provides minimal styling to make jsPsych
+ * experiments look polished without any additional styles.
+ */
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700);
+
+html {
+	font-family: 'Open Sans', Arial, sans-serif;
+	font-size: 24px;
+	line-height: 1.3em;
+	background-image: url("bg.png");
+}
+
+/*** CUSTOMIZED for self-space-reading ***/
+/* consent form */
+[data-name=consent]{
+	width: 70%;
+	margin: auto;
+	padding-bottom: 2em;
+}
+
+/* Container holding jsPsych content */
+
+ .jspsych-display-element {
+   display: flex;
+   flex-direction: column;
+   overflow-y: auto;
+ }
+
+ .jspsych-display-element:focus {
+   outline: none;
+ }
+
+ .jspsych-content-wrapper {
+   /* display: flex; */
+   display: inline-block;
+   margin: auto;
+   /* flex: 1 1 100%; */
+   width: 100%;
+ }
+
+ .jspsych-content {
+   max-width: 90%; /*95%;*/ /* this is mainly an IE 10-11 fix */
+   text-align: center;
+   margin: auto; /* this is for overflowing content */
+ }
+
+ .jspsych-top {
+   align-items: flex-start;
+ }
+
+ .jspsych-middle {
+   align-items: center;
+ }
+
+/* fonts and type */
+
+.jspsych-display-element {
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-size: 20px;
+  line-height: 1.6em;
+}
+
+/* Form elements like input fields and buttons */
+
+.jspsych-display-element input[type="text"] {
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-size: 16px;
+}
+
+/* borrowing Bootstrap style for btn elements, but combining styles a bit */
+.jspsych-btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0px;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  cursor: pointer;
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.jspsych-btn:hover {
+  background-color: #ddd;
+  border-color: #aaa;
+}
+
+.jspsych-btn:disabled {
+  background-color: #eee;
+  color: #aaa;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* jsPsych progress bar */
+
+#jspsych-progressbar-container {
+  color: #555;
+  border-bottom: 1px solid #dedede;
+  background-color: #f9f9f9;
+  margin-bottom: 1em;
+  text-align: center;
+  padding: 8px 0px;
+  width: 100%;
+  line-height: 1em;
+}
+#jspsych-progressbar-container span {
+  font-size: 14px;
+  padding-right: 14px;
+}
+#jspsych-progressbar-outer {
+  background-color: #eee;
+  width: 50%;
+  margin: auto;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+#jspsych-progressbar-inner {
+  background-color: #aaa;
+  width: 0%;
+  height: 100%;
+}
+
+/* Control appearance of jsPsych.data.displayData() */
+#jspsych-data-display {
+  text-align: left;
+  font-size: 16px;
+}
+
+/*-----------------------------
+CUSTOMIZED CSS for self-paced reading experiment
+-------------------------------*/
+
+/* forbidden acces */
+.forbidden{
+	color:rgb(196, 113, 63);
+	width: 80%;
+	margin: auto;
+	text-align: center;
+	margin: 5em auto;
+}
+
+/* chrome logo */
+#chrome{
+	height: 2em;
+	vertical-align: middle;
+}
+
+
+/* instruction div */
+#instruction {
+    display: inline-block;
+    position: absolute;
+    top: 8em;
+    width: 90%;
+    left: 5%;
+}
+
+/* logo div */
+.hlogo{
+	position: absolute;
+	top: 4em;
+	right: 2em;
+	display: inline-block;
+	width: 100%;
+	padding-bottom: 2em;
+}
+/* logo img*/
+#logo {
+	float: right;
+	width: 12em;
+}
+
+
+/* title for instruction */
+#title{
+    font-size: 42px;
+    font-weight: bold;
+    color: rgb(50, 179, 179);
+    /* padding-bottom: 1em; */
+}
+.important{
+	font-weight: bold;
+	color: rgb(196, 113, 63);
+}
+.red{
+	color: rgb(196, 113, 63);
+}
+
+.green{
+	color: rgb(50, 179, 179);
+}
+
+/*** fixation cross **/
+#fix_cross{
+	font-size: 60px;
+	margin-top: -0.8em;
+}
+/*** self-pace-reading plugin **/
+#jspsych-self-pace-reading-stimulus{
+	font-size: 28px;
+	margin-top: -2em;
+	line-height: 1.8em;
+}
+
+/* Hide cursor */
+.hidecursor {
+	cursor: none !important;
+}
+
+
+.wrap{
+	margin: auto;
+	font-family: "Courier New";
+	width: 1024px; /*100%;*/
+	text-align: center;
+	position: relative;
+}
+
+.stimbox{
+	position: absolute;
+	width: 100%;
+}
+
+#mask{
+	color: rgb(200, 200, 200);
+	z-index: 2;
+	font-weight: bold;
+}
+/*** html-keyboard-response plugin **/
+#jspsych-html-keyboard-response-stimulus{
+	font-size: 28px;
+	line-height: 1.5em;
+}
+
+/*** check plugin **/
+.check-header{
+  text-align: center;
+  line-height: 1.4em;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: rgb(89, 89, 89);
+  width: 80%;
+  margin: auto;
+}
+#check-wrap{
+	width: max-content;
+	max-width: 100%;
+	margin: auto;
+	text-align: left;
+	padding-top: 1.5em;
+}
+#check-wrap label{
+	cursor: pointer;
+}
+.checkbox{
+	border-radius: 3px;
+	top: 10px;
+	margin-right: 1em;
+}
+#feedback{
+	font-size: 1.5em;
+	margin: 10%;
+	line-height: 1.4em;
+}
+#required{
+	margin-top: 1em;
+	text-align: center;
+	width: 100%;
+	color: rgb(106, 106, 106);
+}
+
+/** validation button **/
+.button {
+	display: block;
+	width: max-content;
+	max-width: 100%;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	background-color: rgb(218, 218, 218);
+	margin: 1em auto;
+}
+
+.button span {
+  display: inline-block;
+  padding: 10px 40px 10px 40px;
+  font-size: 24px;
+	font-weight: bold;
+	color: rgb(100, 100, 100);
+}
+
+.button span:hover {
+	color: rgb(255, 255, 255);
+	cursor: pointer;
+	background-color: rgb(0, 136, 155);
+  border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;  	
+	-ms-border-radius:8px;  	
+	-o-border-radius: 8px;  
+}
+.button-rating span:hover{
+	background-color: rgb(200, 200, 200);
+}
+
+/*
+ * -- Form elements 
+*/
+
+/* Add bottom margin to the form preamble */
+.form_preamble {		
+	margin-bottom: 30px;
+	margin-left: 5%;
+	font-size: 24px; 
+	text-align: left;
+	line-height: 1.2em;
+}
+#form{
+	text-align: left;
+}
+.form_div {
+	max-width: 750px;
+	font-size: 20px;	
+	line-height: 1.2em;
+	margin: auto;	
+}
+
+.form_row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	width: 100%;
+	height: auto;
+	border: 1px dotted rgba(28,110,164,0.67);
+	margin-bottom: 0.5em;
+	padding: 0.5em 0.2em 0.5em 0.4em;
+	background-color: rgba(220, 230, 230, 0.5);
+	border-radius: 5px;
+}
+.form_quest{
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1.5;
+  color: rgb(210, 86, 8);
+}
+.form_resp{
+	display: flex;
+	flex-direction: column;
+	flex-basis: 100%;
+	flex: 1;
+	font-size: 18px;
+	/*white-space: nowrap;*/
+}
+@media screen and (max-width: 800px) {
+  .form_quest {
+    font-size: 16px;
+  }
+  .form_resp{
+	font-size: 16px;
+  }
+}
+
+.form_resp label:hover {
+	color: rgb(0, 200, 150);
+	background-color: rgb(240, 240, 240);
+}
+ /*
+.form_resp label{ */
+	/*width: max-content;
+	margin-left: 0.5em;*/
+/*}*/
+
+.radio_div{
+	display: inline-block;
+	text-align: center;	
+}
+.radio_div label{
+	/*display: inline-block;*/
+	white-space: nowrap;
+}
+.text_lab {
+	margin: auto;
+}
+
+.form_resp select{
+	/*width: max-content;*/
+	margin-left: 0.5em;
+	width: 60%;
+	text-align: center;
+	margin: auto;
+	font-size: 16px;
+}
+
+.checkbox_lab {
+	margin-left: 0.5em;
+	/*margin-left: 4px;
+	margin-right: 10px;
+	text-align: left;*/
+}
+.checkbox_but{
+	margin-right: 0.8em;
+}
+.radio_lab {
+	margin-left: 0.5em;
+	/*margin-right: 10px;
+	text-align: left;*/
+	/*display: inline-block; *//*Avoid splitting between button and label*/
+}
+.radio_but {
+	margin-right: 0.8em;
+}
+.reqanswer {	
+	background-color: rgba(240, 86, 8, 0.05);	
+}
+
+.hiderow {
+	display: none;
+}
+
+.form_onchg > .form_quest {
+	color: rgb(0,156,140);
+}
+
