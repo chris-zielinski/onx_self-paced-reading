@@ -1,4 +1,5 @@
 ## Self-paced reading online experiment _(onx\_self-paced-reading)_
+### <img src="lay/spr_logo.png" width="200">
 
 Online experiment to collect the reaction time (keyboard key pressed) while reading a word-by-word sentence.
  
